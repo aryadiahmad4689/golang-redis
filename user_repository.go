@@ -7,6 +7,8 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
+const EXPIRE_TIME = 200
+
 type UserRepository struct {
 	redis *redis.Pool
 }
@@ -20,7 +22,7 @@ func (redis *UserRepository) Store(user *User) error {
 	defer conn.Close()
 	serialized, _ := json.Marshal(&user)
 
-	_, err := conn.Do("SETEX", "name", 60*100, serialized)
+	_, err := conn.Do("SETEX", "name", EXPIRE_TIME, serialized)
 	if err != nil {
 		log.Printf("ERROR: fail set key %s, val %s, error %s", "ariadi", user, err.Error())
 		return err
